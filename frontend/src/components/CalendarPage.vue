@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import CalendarView from '../components/Calendar.vue'
+import CalendarView from '../components/CalendarView.vue'
 
 export default {
   components: { CalendarView }

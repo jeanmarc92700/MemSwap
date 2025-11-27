@@ -1,69 +1,43 @@
 <template>
-  <div class="task-container">
-    <input v-model="newTask" @keyup.enter="addTask" placeholder="Nouvelle tâche..." />
+  <div class="bg-white shadow rounded p-4 max-w-xl mx-auto">
+    <input v-model="newTask" @keyup.enter="addTask" placeholder="Nouvelle tâche..." 
+           class="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"/>
 
-    <ul>
-      <li v-for="task in tasks" :key="task.id">
-        <input type="checkbox" v-model="task.done" @change="toggleTask(task)" />
-        <span :style="{ textDecoration: task.done ? 'line-through' : 'none' }">
-          {{ task.title }}
-        </span>
-        <button @click="deleteTask(task.id)">🗑️</button>
+    <ul class="space-y-2">
+      <li v-for="task in tasks" :key="task.id" class="flex items-center justify-between p-2 border rounded hover:bg-gray-50">
+        <div class="flex items-center gap-2">
+          <input type="checkbox" v-model="task.done" @change="toggleTask(task)" class="w-5 h-5"/>
+          <span :class="{ 'line-through text-gray-400': task.done }">{{ task.title }}</span>
+        </div>
+        <button @click="deleteTask(task.id)" class="text-red-500 hover:text-red-700">🗑️</button>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
 export default {
-  data() {
-    return {
-      newTask: '',
-      tasks: []
-    }
-  },
-  methods: {
-    fetchTasks() {
-      axios.get('/api/tasks.php').then(res => {
-        this.tasks = res.data
+  setup() {
+    const tasks = ref([])
+    const newTask = ref('')
+
+    const fetchTasks = () => axios.get('/api/tasks.php').then(res => tasks.value = res.data)
+    const addTask = () => {
+      if (!newTask.value.trim()) return
+      axios.post('/api/tasks.php', { title: newTask.value }).then(() => {
+        newTask.value = ''
+        fetchTasks()
       })
-    },
-    addTask() {
-      if (!this.newTask.trim()) return
-      axios.post('/api/tasks.php', { title: this.newTask }).then(() => {
-        this.newTask = ''
-        this.fetchTasks()
-      })
-    },
-    deleteTask(id) {
-      axios.delete(`/api/tasks.php?id=${id}`).then(() => this.fetchTasks())
-    },
-    toggleTask(task) {
-      axios.put(`/api/tasks.php?id=${task.id}`, { done: task.done })
     }
-  },
-  mounted() {
-    this.fetchTasks()
+    const deleteTask = id => axios.delete(`/api/tasks.php?id=${id}`).then(fetchTasks)
+    const toggleTask = task => axios.put(`/api/tasks.php?id=${task.id}`, { done: task.done })
+
+    onMounted(fetchTasks)
+
+    return { tasks, newTask, addTask, deleteTask, toggleTask }
   }
 }
 </script>
-
-<style>
-.task-container {
-  padding: 20px;
-}
-
-.task-container ul {
-  list-style: none;
-  padding: 0;
-}
-
-.task-container li {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 8px;
-}
-</style>
