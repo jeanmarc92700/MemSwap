@@ -1,0 +1,7 @@
+node_modules/
+
+frontend/dist/
+
+.env
+
+database/data.json
