@@ -1,35 +1,47 @@
 <template>
-  <div ref="calendar" class="bg-white shadow rounded p-4"></div>
+  <div id="calendar" class="full-calendar-container"></div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import axios from 'axios'
+import '@fullcalendar/core/vdom' 
 
 export default {
-  setup() {
-    const calendarEl = ref(null)
-
-    onMounted(() => {
-      const calendar = new Calendar(calendarEl.value, {
-        plugins: [dayGridPlugin, interactionPlugin],
-        initialView: 'dayGridMonth',
-        events: '/api/calendar.php',
-        dateClick(info) {
-          const title = prompt('Titre de l\'événement :')
-          if (title) {
-            axios.post('/api/calendar.php', { title, start: info.dateStr })
-                 .then(() => calendar.refetchEvents())
-          }
+  mounted() {
+    const calendarEl = this.$el;
+    
+    const calendar = new Calendar(calendarEl, {
+      plugins: [dayGridPlugin, interactionPlugin],
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,dayGridWeek,dayGridDay'
+      },
+      locale: 'fr', 
+      events: '/api/calendar.php', 
+      dateClick: (info) => {
+        const title = prompt("Titre de l'événement pour " + info.dateStr + " :")
+        if (title) {
+          axios.post('/api/calendar.php', { title, start: info.dateStr })
+            .then(() => {
+              calendar.refetchEvents();
+            })
+            .catch(error => console.error("Erreur lors de l'ajout de l'événement:", error));
         }
-      })
-      calendar.render()
+      }
     })
-
-    return { calendarEl }
+    calendar.render()
   }
 }
 </script>
+
+<style>
+.full-calendar-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+</style>

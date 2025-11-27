@@ -1,22 +1,21 @@
 <template>
-  <div class="min-h-screen">
-    <nav class="bg-white shadow-md flex justify-center gap-6 py-4 mb-6">
-      <router-link to="/calendar" class="font-semibold px-4 py-2 rounded hover:bg-blue-100"
-                   :class="{ 'bg-blue-500 text-white': $route.path === '/calendar' }">
+  <div class="min-h-screen bg-gray-50">
+    <nav class="flex gap-4 p-4 bg-white shadow-md">
+      <router-link to="/calendar" class="text-lg font-medium text-gray-600 hover:text-blue-600 transition duration-150" :class="{ 'text-blue-600 font-bold border-b-2 border-blue-600': $route.path === '/calendar' }">
         📅 Calendrier
       </router-link>
-      <router-link to="/tasks" class="font-semibold px-4 py-2 rounded hover:bg-green-100"
-                   :class="{ 'bg-green-500 text-white': $route.path === '/tasks' }">
+      <router-link to="/tasks" class="text-lg font-medium text-gray-600 hover:text-blue-600 transition duration-150" :class="{ 'text-blue-600 font-bold border-b-2 border-blue-600': $route.path === '/tasks' }">
         ✅ Tâches
       </router-link>
     </nav>
-
-    <main class="container mx-auto px-4">
+    <div class="p-6">
       <router-view />
-    </main>
+    </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  // Option Vue 3
+}
 </script>
