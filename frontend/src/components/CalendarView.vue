@@ -7,7 +7,6 @@ import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import axios from 'axios'
-import '@fullcalendar/core/vdom' 
 
 export default {
   mounted() {
