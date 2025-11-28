@@ -2,26 +2,15 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
+  // Ajout de base: '/' pour être sûr du chemin absolu sur Amplify
+  base: '/', 
   root: './', 
-
   plugins: [vue()],
-  server: {
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8080', 
-        changeOrigin: true,
-      }
-    }
-  },
+  // ... (section server inchangée)
   
-
   build: {
-
     outDir: 'dist',
-
-    rollupOptions: {
-        input: 'index.html' 
-    }
+    // SUPPRIMER TOUTE LA SECTION rollupOptions
+    // Vite détecte main.js automatiquement comme point d'entrée.
   }
 })
